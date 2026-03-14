@@ -16,10 +16,8 @@ export default function Page() {
 
       const data = await res.json();
 
-      // 🔥 IMPORTANT: create NEW array reference
-      const latestFirst = [...data].reverse();
-
-      setReadings(latestFirst);
+      // newest first
+      setReadings(data.reverse());
       setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -56,7 +54,7 @@ export default function Page() {
 
         return (
           <div
-            key={reading.id + reading.createdAt} // 🔥 important for re-render
+            key={reading.id}
             style={{
               background: "#1e293b",
               padding: "20px",
@@ -83,7 +81,7 @@ export default function Page() {
               Status: {reading.status}
             </h3>
 
-            {isCritical && reading.alerts?.length > 0 && (
+            {isCritical && reading.alerts && (
               <>
                 <h4 style={{ marginTop: "15px", color: "#facc15" }}>
                   ⚠ Alerts:
@@ -96,7 +94,7 @@ export default function Page() {
               </>
             )}
 
-            {isCritical && reading.recommendations?.length > 0 && (
+            {isCritical && reading.recommendations && (
               <>
                 <h4 style={{ marginTop: "15px", color: "#38bdf8" }}>
                   💡 Recommendations:
