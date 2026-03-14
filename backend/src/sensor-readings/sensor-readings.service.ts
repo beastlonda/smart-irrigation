@@ -102,8 +102,12 @@ export class SensorReadingsService {
   }
 
   findAll() {
-    return this.sensorRepo.find({
-      relations: ['device'],
-    });
-  }
+  return this.sensorRepo.find({
+    relations: ['device'],
+    order: {
+      createdAt: 'DESC',
+    },
+    take: 20,
+  });
+}
 }
