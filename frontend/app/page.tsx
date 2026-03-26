@@ -20,26 +20,32 @@ export default function Home() {
   const [latest, setLatest] = useState<SensorData | null>(null);
 
   const fetchData = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/sensor-readings");
-      const json = await res.json();
+  try {
+    const res = await fetch("http://localhost:5000/sensor-readings");
 
-      setData(json);
+    const json: SensorData[] = await res.json(); // ✅ FIX
 
-      if (json.length > 0) {
-        setLatest(json[0]); // latest reading
-      }
-    } catch (err) {
-      console.error("Error fetching data:", err);
+    setData(json);
+
+    if (json.length > 0) {
+      setLatest(json[json.length - 1]); // better
     }
+  } catch (err) {
+    console.error("Error fetching data:", err);
+  }
+};
+  useEffect(() => {
+  const loadData = async () => {
+    await fetchData();
   };
 
-  useEffect(() => {
-    fetchData();
+  loadData();
 
-    const interval = setInterval(fetchData, 3000); // auto refresh
-    return () => clearInterval(interval);
-  }, []);
+  const interval = setInterval(loadData, 3000);
+  return () => clearInterval(interval);
+}, []);
+
+
 
   const getColor = (status: string) => {
     if (status === "GOOD") return "#22c55e";
