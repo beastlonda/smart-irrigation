@@ -1,23 +1,31 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 import { DevicesModule } from './devices/devices.module';
-import { CropsModule } from './crops/crops.module';
 import { SensorReadingsModule } from './sensor-readings/sensor-readings.module';
+import { CropsModule } from './crops/crops.module';
 import { AutoActionsModule } from './auto-actions/auto-actions.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: process.env.DATABASE_URL,
-      autoLoadEntities: true,
-      synchronize: true,
+    // Load environment variables
+    ConfigModule.forRoot({
+      isGlobal: true,
     }),
 
+    // Database connection
+  TypeOrmModule.forRoot({
+  type: 'better-sqlite3',
+  database: 'smartfarm.db',
+  autoLoadEntities: true,
+  synchronize: true,
+}),
+
+    // Project modules
     DevicesModule,
-    CropsModule,
     SensorReadingsModule,
+    CropsModule,
     AutoActionsModule,
   ],
 })

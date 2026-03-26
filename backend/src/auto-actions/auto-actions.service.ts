@@ -7,13 +7,26 @@ import { AutoAction } from './auto-action.entity';
 export class AutoActionsService {
   constructor(
     @InjectRepository(AutoAction)
-    private autoActionRepo: Repository<AutoAction>,
+    private autoRepo: Repository<AutoAction>,
   ) {}
 
-  findAll() {
-    return this.autoActionRepo.find({
-      relations: ['sensorReading'],
-      order: { createdAt: 'DESC' },
+  async createAction(deviceId: number, action: string) {
+    return this.autoRepo.save({
+      deviceId: deviceId,
+      action: action,
+      createdAt: new Date(),
+    });
+  }
+
+  async getRecentActions(deviceId: number) {
+    return this.autoRepo.find({
+      where: {
+        deviceId: deviceId,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+      take: 5,
     });
   }
 }

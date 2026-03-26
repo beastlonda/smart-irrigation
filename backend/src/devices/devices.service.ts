@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { Device } from './device.entity';
 import { Crop } from '../crops/crop.entity';
 
@@ -14,9 +15,10 @@ export class DevicesService {
     private cropRepository: Repository<Crop>,
   ) {}
 
-  async create(data: any) {
+  // ✅ CREATE DEVICE
+  async create(createDeviceDto: any): Promise<Device> {
     const crop = await this.cropRepository.findOne({
-      where: { id: data.cropId },
+      where: { id: createDeviceDto.cropId },
     });
 
     if (!crop) {
@@ -24,16 +26,38 @@ export class DevicesService {
     }
 
     const device = this.deviceRepository.create({
-      name: data.name,
-      location: data.location,
-      mode: data.mode,
+      name: createDeviceDto.name,
+      location: createDeviceDto.location,
       crop: crop,
     });
 
     return this.deviceRepository.save(device);
   }
 
-  findAll() {
+  // ✅ GET ALL DEVICES
+  async findAll(): Promise<Device[]> {
     return this.deviceRepository.find();
+  }
+
+  // ✅ GET ONE DEVICE
+  async findOne(id: number): Promise<Device> {
+    const device = await this.deviceRepository.findOne({
+      where: { id },
+    });
+
+    if (!device) {
+      throw new NotFoundException('Device not found');
+    }
+
+    return device;
+  }
+
+  // ✅ DELETE DEVICE
+  async remove(id: number): Promise<void> {
+    const result = await this.deviceRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException('Device not found');
+    }
   }
 }

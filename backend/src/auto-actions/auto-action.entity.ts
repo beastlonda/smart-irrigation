@@ -1,29 +1,16 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  ManyToOne,
-  CreateDateColumn,
-} from 'typeorm';
-import { SensorReading } from '../sensor-readings/sensor-reading.entity';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class AutoAction {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => SensorReading, { onDelete: 'CASCADE' })
-  sensorReading: SensorReading;
+  @Column({ type: 'int' })
+  deviceId: number;
 
-  @Column()
-  actionType: string;
+  @Column({ type: 'text' })
+  action: string;
 
-  @Column()
-  message: string;
-
-  @Column({ default: true })
-  executed: boolean;
-
-  @CreateDateColumn()
+  @Column({ type: 'datetime' })
   createdAt: Date;
 }

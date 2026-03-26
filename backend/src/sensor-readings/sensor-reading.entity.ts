@@ -1,10 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  CreateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Device } from '../devices/device.entity';
 
 @Entity()
@@ -12,41 +6,27 @@ export class SensorReading {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Device, (device) => device.readings, {
-    onDelete: 'CASCADE',
-  })
-  device: Device;
-
-  @Column('float')
+  @Column()
   temperature: number;
 
-  @Column('float')
+  @Column()
   humidity: number;
 
   @Column('float')
   ph: number;
 
-  @Column('float')
+  @Column()
   soilMoisture: number;
 
-  @Column('float')
+  @Column()
   nitrogen: number;
 
-  @Column('float')
+  @Column()
   phosphorus: number;
 
-  @Column('float')
+  @Column()
   potassium: number;
 
-  @Column()
-  status: string;
-
-  @Column('simple-array', { nullable: true })
-  alerts: string[];
-
-  @Column('simple-array', { nullable: true })
-  recommendations: string[];
-
-  @CreateDateColumn()
-  createdAt: Date;
+  @ManyToOne(() => Device, (device) => device.readings, { eager: true })
+  device: Device;
 }
